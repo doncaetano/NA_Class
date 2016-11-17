@@ -14,7 +14,7 @@
 
 #### 3. Interpolação polinomial por partes
 
-  Na interpolaçãao polinomial por partes, em cada intervalo (xi, xi+1) tem-se um polinômio diferente, ou seja, resolve se um problema de interpolação localmente.
+  Na interpolação polinomial por partes, em cada intervalo (xi, xi+1) tem-se um polinômio diferente, ou seja, resolve se um problema de interpolação localmente.
 
   Este polinômio pode ser de grau 1 (interpolação via retas) ou de grau maior, por exemplo, de grau 3.
 
