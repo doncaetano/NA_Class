@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-void resolve(int np, double* x, double* y, double* s)
+void calcDerivadaDois(int np, double* x, double* y, double* s)
 {
 	double e[np], d[np];
 	
@@ -42,6 +42,17 @@ void resolve(int np, double* x, double* y, double* s)
 	s[np] = 0;	
 }
 
+void achandoParametro( int np, double* x, double* y, double* s, double *m)
+{
+	for( int = 1; i< np; i++){
+		m[1][i] = (s[i+1]-s[i])/(6*(x[i+1]-x[i]));
+		m[2][i] = s[i]/2;
+		m[3][i] = ((y[i+1] - y[i])/(x[i+1]-x[i])) - (((s[i+1] + 2*s[i])*(x[i+1]-x[i]))/6);
+		m[4][i] = y[i];
+	}
+	
+}
+
 void encerra(int opc)
 {
 	if(opc==0)
@@ -66,7 +77,7 @@ int main()
 	double x[99999], y[99999]; //Coordenadas x e y dos pontos;
 	double s[99999]; //Valores calculados de s'';
 	double z; //Ponto de teste;
-
+	double matrizParametros[5][99999]; // matriz com os parametros a,b,c,d
 	if(opc==1)
 	{
 		printf("Opcao 1 selecionada.\n\n");
@@ -89,7 +100,8 @@ int main()
 		printf("o valor de z:");
 		scanf("%lf", &z);
 
-		resolve(nPontos, x, y, s);
+		calcDerivadaDois(nPontos, x, y, s);
+		achandoParametros(nPontos, x, y, s, matrizParametros);
 		
 		//Debug
 		for(int i=1; i<=nPontos; i++)
@@ -112,7 +124,7 @@ int main()
 
 		scanf("%lf", &z);
 
-		resolve(nPontos, x, y, s);
+		calcDerivadaDois(nPontos, x, y, s);
 		//imagem(z);
 	}
 
