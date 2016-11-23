@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 
 void calcDerivadaDois(int np, double* x, double* y, double* s)
 {
@@ -41,10 +42,10 @@ void calcDerivadaDois(int np, double* x, double* y, double* s)
 	s[1] = 0;
 	s[np] = 0;	
 }
-
-void achandoParametro( int np, double* x, double* y, double* s, double *m)
+double m[5][9999]; // matriz com os parametros a,b,c,d
+void achandoParametros( int np, double* x, double* y, double* s)
 {
-	for( int = 1; i< np; i++){
+	for( int i = 1; i< np; i++){
 		m[1][i] = (s[i+1]-s[i])/(6*(x[i+1]-x[i]));
 		m[2][i] = s[i]/2;
 		m[3][i] = ((y[i+1] - y[i])/(x[i+1]-x[i])) - (((s[i+1] + 2*s[i])*(x[i+1]-x[i]))/6);
@@ -74,10 +75,9 @@ int main()
 
 
 	int nPontos=0; //Numero de pontos do problema;
-	double x[99999], y[99999]; //Coordenadas x e y dos pontos;
-	double s[99999]; //Valores calculados de s'';
+	double x[9999], y[9999]; //Coordenadas x e y dos pontos;
+	double s[9999]; //Valores calculados de s'';
 	double z; //Ponto de teste;
-	double matrizParametros[5][99999]; // matriz com os parametros a,b,c,d
 	if(opc==1)
 	{
 		printf("Opcao 1 selecionada.\n\n");
@@ -101,12 +101,25 @@ int main()
 		scanf("%lf", &z);
 
 		calcDerivadaDois(nPontos, x, y, s);
-		achandoParametros(nPontos, x, y, s, matrizParametros);
+		achandoParametros(nPontos, x, y, s);
+		
+		if(z>x[1]){
+			double spline = m[1][1]*pow((z-x[1]),3) + m[2][1]*pow((z-x[1]),2) + m[3][1]*(z-x[1]) + 2;
+			printf("s(z) = %lf\n", spline);
+		}else{
+			for(int i=2; i<nPontos; i++){
+				if(z>x[i]){
+					double spline = m[1][1]*pow((z-x[i]),3) + m[2][1]*pow((z-x[i]),2) + m[3][1]*(z-x[i]) + 2;
+					printf("s(z) =  %lf\n", spline);
+					break;
+				}
+			}
+		}
 		
 		//Debug
-		for(int i=1; i<=nPontos; i++)
-			printf("%lf ", s[i]);
-		printf("\n");
+		//for(int i=1; i<=nPontos; i++)
+		//	printf("%lf ", s[i]);
+		//printf("\n");
 
 		//imagem(z);
 	}
