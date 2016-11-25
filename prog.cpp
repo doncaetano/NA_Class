@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
@@ -46,6 +47,7 @@ void calcDerivadaDois(int np, double* x, double* y, double* s)
 	s[1] = 0;
 	s[np] = 0;	
 }
+
 double m[5][9999]; // matriz com os parametros a,b,c,d
 void achandoParametros( int np, double* x, double* y, double* s)
 {
@@ -77,11 +79,15 @@ int main()
 	int opc=0;
 	scanf("%d", &opc);
 
+	if(opc==3)
+		encerra(0);
 
 	int nPontos=0; //Numero de pontos do problema;
 	double x[9999], y[9999]; //Coordenadas x e y dos pontos;
 	double s[9999]; //Valores calculados de s'';
 	double z; //Ponto de teste;
+
+	//Leitura dos dados
 	if(opc==1)
 	{
 		printf("Opcao 1 selecionada.\n\n");
@@ -103,63 +109,69 @@ int main()
 
 		printf("o valor de z:\n");
 		scanf("%lf", &z);
-
-		calcDerivadaDois(nPontos, x, y, s);
-		achandoParametros(nPontos, x, y, s);
-		
-		if(z>=x[1] && z<x[2]){
-			double spline = m[1][1]*pow((z-x[1]),3) + m[2][1]*pow((z-x[1]),2) + m[3][1]*(z-x[1]) + m[4][1];
-			printf("\n\n\ns(z) = %lf\n", spline);
-		}else{
-			for(int i=2; i<=nPontos; i++){
-				if(z>=x[i]){
-					double spline = m[1][i]*pow((z-x[i]),3) + m[2][i]*pow((z-x[i]),2) + m[3][i]*(z-x[i]) + m[4][i];
-					printf("\n\n\ns(z) =  %lf\n", spline);
-					break;
-				}
-			}
-		}
-		
-		ofstream file;
-		file.open ("grafico.txt");
-		double pulo = (fabs(x[nPontos]-x[1]))/100;
-		double var = x[1];
-		int i=1;
-		while(var <= x[nPontos]){
-			if(var>=x[i+1]) i++;
-			double spline = m[1][i]*pow((var-x[i]),3) + m[2][i]*pow((var-x[i]),2) + m[3][i]*(var-x[i]) + m[4][i];
-			file << var << " " << spline << endl;
-			var+=pulo;
-		} 
-		file.close();
-		
-		//Debug
-		//for(int i=1; i<=nPontos; i++)
-		//	printf("%lf ", s[i]);
-		//printf("\n");
-
-		//imagem(z);
 	}
 
 	if(opc==2)
 	{
 		printf("Opcao 2 selecionada.\n\n");
-		scanf("%d", &nPontos);
+
+		printf("Digite uma opção:\n1 - Ler arquivo dados1.txt\n2 - Ler arquivo dados2.txt\n3 - Ler arquivo dados3.txt\n4 - Sair\n");
+		int opc2=0;
+		scanf("%d", &opc2);
+
+		if(opc2==4)
+			encerra(0);
+
+		char arquivo[10] = "dados", aux[3];
+		aux[0] = opc2 + '0';
+		aux[1] = '\0';
+		strcat(arquivo, aux);
+		strcat(arquivo, ".txt");
+
+		FILE* farq = fopen(arquivo, "r");
+
+		fscanf(farq, "%d", &nPontos);
 
 		for(int i=1; i<=nPontos; i++)
-			scanf("%lf", &x[i]);
+			fscanf(farq, "%lf", &x[i]);
 
 		for(int i=1; i<=nPontos; i++)
-			scanf("%lf", &y[i]);
+			fscanf(farq, "%lf", &y[i]);
 
-		scanf("%lf", &z);
-
-		calcDerivadaDois(nPontos, x, y, s);
-		//imagem(z);
+		fscanf(farq, "%lf", &z);
 	}
 
-	if(opc==3)
-		encerra(0);
+	
+	calcDerivadaDois(nPontos, x, y, s);
+	achandoParametros(nPontos, x, y, s);
+	
+	if(z>=x[1] && z<x[2]){
+		double spline = m[1][1]*pow((z-x[1]),3) + m[2][1]*pow((z-x[1]),2) + m[3][1]*(z-x[1]) + m[4][1];
+		printf("\n\n\ns(z) = %lf\n", spline);
+	}else{
+		for(int i=2; i<=nPontos; i++){
+			if(z>=x[i]){
+				double spline = m[1][i]*pow((z-x[i]),3) + m[2][i]*pow((z-x[i]),2) + m[3][i]*(z-x[i]) + m[4][i];
+				printf("\n\n\ns(z) =  %lf\n", spline);
+				break;
+			}
+		}
+	}
+	
+	//Escrita no arquivo grafico.txt para geracao do grafico com o MatLab
+	ofstream file;
+	file.open ("grafico.txt");
+	double pulo = (fabs(x[nPontos]-x[1]))/100;
+	double var = x[1];
+	int i=1;
+	while(var <= x[nPontos]){
+		if(var>=x[i+1]) i++;
+		double spline = m[1][i]*pow((var-x[i]),3) + m[2][i]*pow((var-x[i]),2) + m[3][i]*(var-x[i]) + m[4][i];
+		file << var << " " << spline << endl;
+		//printf("%lf %lf\n", var, spline);
+		var+=pulo;
+	} 
+	file.close();
 
 	return 0;
 }
