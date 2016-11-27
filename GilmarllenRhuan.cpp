@@ -172,7 +172,6 @@ int main()
 		if(var>=x[i+1]) i++;
 		double spline = m[1][i]*pow((var-x[i]),3) + m[2][i]*pow((var-x[i]),2) + m[3][i]*(var-x[i]) + m[4][i];
 		file << var << " " << spline << endl;
-		//printf("%lf %lf\n", var, spline);
 		var+=pulo;
 	} 
 	file.close();
